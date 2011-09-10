@@ -1,0 +1,8 @@
+;$Id$
+name='Users Tax'
+description='Associates users with a taxonomy term'
+core=6.x
+php=5.x
+version=0.1
+dependencies[] = taxonomy
+package = Email

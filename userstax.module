@@ -1,0 +1,143 @@
+<?php
+//$Id$
+/**
+* This module provides an administrative interface 
+*This module sends a particular node content to group of users selected through checkboxes 
+* @file
+*/
+
+
+function userstax_menu() {
+   // Need to pass NODE ID here:
+   $items['admin/userstax/selecttax'] = array(
+      'title' => 'Associate users with taxonomy',
+      'page callback' => 'userstax_selecttax',
+       'access arguments' => array('administer users'),
+      'type' => MENU_NORMAL_ITEM,
+   );
+   return $items;
+}
+
+function userstax_selecttax()
+{
+	$sb= '<p>'.t('Please select users and taxonomy terms').'</p>';
+$sb .=drupal_get_form('userstax_select_form');
+return $sb;
+}
+function userstax_select_form()
+{
+	$form['users']=array(
+'#type' => 'fieldset',
+'#title' => t("Users"),
+);
+	
+	$res=db_query('SELECT users.name,users.uid FROM {users}');
+	while($row=db_fetch_object($res))
+	{
+		if($row->uid != 0)
+		{
+		$ch='ch'.$row->uid;
+		//echo $ch;
+		$form['users'][$ch] =array(
+		     '#type' => 'checkbox',
+     '#title' => $row->name,
+     '#default_value' => 0,
+     '#description' =>
+       t('If this is checked, the terms will be associated to '.$row->name),
+  );
+}
+		}
+		
+	$form['tax']=array(
+'#type' => 'fieldset',
+'#title' => t("Taxonomy terms"),
+);
+	
+	
+	$r=db_query("SELECT vocabulary.vid,vocabulary.name from {vocabulary} ");
+	while($ro=db_fetch_object($r))
+	{
+		$a=$ro->vid;
+	
+		$r2=db_query('SELECT t.name,t.tid from {term_data} t where t.vid=%d',$a);
+		$options=array('0'=>t('None'));
+		while($ro2=db_fetch_object($r2))
+		{
+			$options[$ro2->tid] =$ro2->name;
+		} 
+		$form['tax'][$a]=array(
+		'#type' => 'select' ,
+		'#title' => $ro->name ,
+		'#default_value'=>'0',
+		'#options'=>$options,
+		'#multiple'=>TRUE,
+		'#description' =>t('Select from '.$ro->name.' vocabulary'),
+		);		
+	}
+		  // Finally, a submit button:
+  $form['submit'] = array(
+     '#type' => 'submit',
+     '#value' => t('Submit'),
+  );
+		return $form;
+	}
+
+function userstax_select_form_submit($form,&$form_state)
+{
+	 $form_values=$form_state['values'];
+	$sql2="SELECT MAX(users.uid) from users ";
+	$res2=db_query($sql2); 
+	$row2=db_fetch_object($res2);
+	$variables=get_object_vars($row2);
+	$keys=array_keys($variables);
+	 $max=$variables[$keys[0]];
+
+	 $i=1;
+	  for ($i=1;$i<=$max;$i++)
+	 {
+		 $c='ch'.$i;
+		     if($form_values[$c]==1)
+	     {
+			 $userid =$i;
+			$users[]=$userid;
+			 }
+	 }
+	 	$sql3="SELECT MAX(vocabulary.vid) from vocabulary ";
+	$res3=db_query($sql3); 
+	$row3=db_fetch_object($res3);
+	$variables2=get_object_vars($row3);
+	$keys2=array_keys($variables2);
+	 $max2=$variables2[$keys2[0]];
+	 
+	   for ($i=1;$i<=$max2;$i++)
+	 {
+		 
+		 foreach($form_values[$i] as $y => $x)
+		 {
+			
+			 if($x==$y)		 
+		 $terms[]=$y;	
+	 }	 
+	 }
+	 $table="userstax";
+	 if($users)
+	 {
+	 foreach($users as $u)
+	 {
+		 foreach($terms as $t)
+		 {
+			 if($t != 0)
+			 {
+	 $data=array(
+	 'uid'=>$u,
+	 'tid'=>$t);
+	
+	$r3= drupal_write_record($table,$data);
+	 }
+ }
+}
+}
+ drupal_set_message(t('Your form has been processed .'));
+
+	   $form_state['redirect'] = sprintf('admin/');
+ }

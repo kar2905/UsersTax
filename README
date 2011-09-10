@@ -1,0 +1,47 @@
+Users Tax
+================================================================================
+
+Summary
+--------------------------------------------------------------------------------
+
+The Users Tax module lets the admin to associate users with a taxonomy term. 
+
+
+Requirements
+--------------------------------------------------------------------------------
+
+The Users Tax Term module requires the Taxonomy (core).
+
+Optional : Email Node module 
+
+
+Installation
+--------------------------------------------------------------------------------
+
+1. Copy the Userstax folder to sites/all/modules or to a site-specific
+   modules folder.
+2. Go to Administer > Site building > Modules and enable the Users Tax     module.
+
+
+Usage
+--------------------------------------------------------------------------------
+
+1.Go to Administer -> Associate users with taxonomy on the left sidebar . Alternatively , go to Administer -> By Module -> Associate users with taxonomy in the Users Tax fieldset .
+3. Select the users through the checkboxes and select the taxonomy terms from the respective vocabularies .(You can also select multiple terms by pressing "Ctrl" and selecting the terms)
+4. Click on Submit . 
+
+Note : Select 'None' if you do not wish to associate any taxonomy term from a particular vocabulary
+
+
+Support
+--------------------------------------------------------------------------------
+
+
+
+
+Credits
+--------------------------------------------------------------------------------
+
+Author: Kartik Mandaville <kar2905@gmail.com>
+Blog : (http://kar2905.wordpress.com/)
+

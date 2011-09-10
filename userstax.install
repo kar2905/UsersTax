@@ -1,0 +1,42 @@
+<?php
+// $Id$
+
+/**
+* Install the userstax module
+* @file
+*/
+function userstax_install()
+{
+drupal_install_schema('userstax');
+}
+/**
+ * Implementation of hook_uninstall
+ * Uninstall the module
+ */
+function userstax_uninstall()
+{
+drupal_uninstall_schema('userstax');
+}
+/**
+ * Implementation of hook_schema
+ */
+function userstax_schema()
+{
+$schema['userstax']=array(
+'fields'=>array(
+'uid'=>array(
+'type'=>'int',
+'unsigned'=> TRUE,
+'not null'=> TRUE,
+),
+'tid'=>array(
+'type'=>'int',
+'unsigned'=> TRUE,
+'not null'=> TRUE,
+),
+),
+'primary key' => array('uid','tid'),
+);
+return $schema;
+}
+
